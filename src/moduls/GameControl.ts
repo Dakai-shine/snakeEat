@@ -16,7 +16,7 @@ class GameControl{
   constructor(){
     this.snake=new Snake()
     this.food=new Food()
-    this.scroePanel=new ScorePanel()
+    this.scroePanel=new ScorePanel(10,1)
 
     this.init()
   }
@@ -36,6 +36,7 @@ class GameControl{
 
     //修改direction的值
     this.direction=event.key
+    
   }
 
   //创建一个控制蛇移动的方法
@@ -63,13 +64,33 @@ class GameControl{
         break
     }
 
+    // 检查蛇是否吃到了食物
+    this.checkEat(X,Y)
+      
     //修改蛇的X值和Y值
-    this.snake.X = X
-    this.snake.Y = Y
+    try{
+      this.snake.X = X
+      this.snake.Y = Y
+    }catch(e:any){
+      alert(e.message + 'GameOver~')
+      this.isLive = false
+    }
 
     //开启一个定时器
     this.isLive && setTimeout(this.run.bind(this),300 - (this.scroePanel.level - 1) * 30)
   }
+  
+    //定义一个方法，判断蛇是否吃到了食物
+    checkEat(X: number,Y: number){
+      if( X === this.food.X && Y === this.food.Y){
+         // 食物位置重置
+        this.food.change()
+         // 分数增加
+        this.scroePanel.addScore()
+         // 蛇增加一节
+        this.snake.addBody()
+      }
+    }
 
 }
 
